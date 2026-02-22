@@ -1,0 +1,26 @@
+name: Build Tweak
+
+on: [push, pull_request]
+
+jobs:
+  build:
+    name: Build
+    runs-on: macos-latest # Обязательно macOS для iOS-разработки
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v3
+
+      - name: Install Theos
+        uses: Randomblock1/theos-action@v1 # Используем экшн для установки Theos
+        with:
+          theos-dir: 'theos'
+
+      - name: Build Package
+        run: |
+          make package FINALPACKAGE=1
+          
+      - name: Upload Package
+        uses: actions/upload-artifact@v3
+        with:
+          name: tweak-package
+          path: packages/*.deb
